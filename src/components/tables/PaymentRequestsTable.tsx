@@ -19,8 +19,8 @@ interface PaymentRequestsPageProps {
     loading?: boolean;
     error?: string | null;
     showActions?: boolean;
-    onApprove?: (id: number) => void;
-    onReject?: (id: number) => void;
+    onApprove?: (id: string) => void;
+    onReject?: (id: string) => void;
 }
 
 export default function PaymentRequestsPage({
@@ -30,27 +30,56 @@ export default function PaymentRequestsPage({
     onApprove,
     onReject,
 }: PaymentRequestsPageProps) {
-    
+
     const theme = useTheme();
     const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("all");
 
+
+    const normalizedRequests = useMemo(() => {
+        return (requests ?? []).map((r: any) => ({
+            ...r,
+            name: r.name ?? "—",
+            phone: r.phone ?? "—",
+        }));
+    }, [requests]);
+
+    const sortedRequests = useMemo(() => {
+        const parseTime = (v: any) => {
+            const t = new Date(String(v ?? "")).getTime();
+            return Number.isNaN(t) ? 0 : t;
+        };
+
+        return [...normalizedRequests].sort(
+            (a, b) => parseTime(b.created_at) - parseTime(a.created_at)
+        );
+    }, [normalizedRequests]);
+
+
     const filteredRequests = useMemo(() => {
-        return filter === "all" ? requests : requests.filter((r) => r.status === filter);
-    }, [requests, filter]);
+        return filter === "all"
+            ? sortedRequests
+            : sortedRequests.filter((r) => r.status === filter);
+    }, [sortedRequests, filter]);
 
     const counts = useMemo(
         () => ({
-            all: requests.length,
-            pending: requests.filter((r) => r.status === "pending").length,
-            approved: requests.filter((r) => r.status === "approved").length,
-            rejected: requests.filter((r) => r.status === "rejected").length,
+            all: sortedRequests.length,
+            pending: sortedRequests.filter((r) => r.status === "pending").length,
+            approved: sortedRequests.filter((r) => r.status === "approved").length,
+            rejected: sortedRequests.filter((r) => r.status === "rejected").length,
         }),
-        [requests]
+        [sortedRequests]
     );
 
-    const formatDate = (dateStr: string) => {
-        const date = new Date(dateStr);
-        return date.toLocaleString("he-IL", {
+
+    const formatDate = (dateStr: any) => {
+        const s = String(dateStr ?? "").trim();
+        if (!s) return "-";
+
+        const d = new Date(s);
+        if (Number.isNaN(d.getTime())) return "-";
+
+        return d.toLocaleString("he-IL", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
@@ -73,9 +102,9 @@ export default function PaymentRequestsPage({
             ),
         },
         {
-            key: "date",
             label: "תאריך",
-            render: (value: string | number | undefined) => formatDate(value as string),
+            render: (_v: undefined, row: any) =>
+                formatDate(row.created_at ?? row.createdAt ?? row.date ?? ""),
         },
         { key: "name", label: "שם" },
         { key: "phone", label: "טלפון" },
@@ -189,9 +218,9 @@ export default function PaymentRequestsPage({
             <DataTable<RequestItem>
                 columns={columns}
                 rows={filteredRequests}
-                sortable
-                initialSort={{ column: 'date' as keyof RequestItem, direction: 'desc' }}
+
             />
+
         </Box>
     );
 }

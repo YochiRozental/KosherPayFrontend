@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import SentPaymentRequests from "../components/dashboard/SentPaymentRequests";
-import type { User } from "../types";
+import type { UserMe } from "../types";
 
 interface SentRequestsPageProps {
-    user: User;
+    user: UserMe;
     onLogout: () => void;
 }
 

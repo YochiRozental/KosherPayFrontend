@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Box, Typography, Alert, Snackbar } from "@mui/material";
 import ActionsSection from "../components/dashboard/AccountTansactions";
-import type { User } from "../types";
+import type { UserMe } from "../types";
 
-export default function ActionsDashboardPage({ user }: { user: User; onLogout: () => void }) {
+export default function ActionsDashboardPage({ user }: { user: UserMe; onLogout: () => void }) {
     const [isLoading, setIsLoading] = useState(false);
     const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: "success" | "error" | "info" }>({
         open: false,

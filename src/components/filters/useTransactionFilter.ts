@@ -1,23 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
-import type { User, Transaction, ApiResponse, DateFilter } from "../../types";
+import type { UserMe, Transaction, ApiResponse, DateFilter } from "../../types";
 import type { Dayjs } from "dayjs";
-import * as api from "../../api/userApi";
+import * as api from "../../api/paymentsApi";
 import { filterAndSortTransactions } from "./utils/filterUtils";
 
 export type SortDirection = "asc" | "desc";
 export type SortColumn = keyof Transaction;
 
-export function useTransactionFilter(user: User) {
+export function useTransactionFilter(user: UserMe) {
     const [history, setHistory] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    // סינון
     const [filter, setFilter] = useState<DateFilter>("all");
     const [customStartDate, setCustomStartDate] = useState<Dayjs | null>(null);
     const [customEndDate, setCustomEndDate] = useState<Dayjs | null>(null);
 
-    // מיון
     const [sortColumn, setSortColumn] = useState<SortColumn>("transaction_date");
     const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
@@ -29,11 +27,13 @@ export function useTransactionFilter(user: User) {
         { keywords: ["payment"], label: "תשלום", color: "error" },
     ];
 
-    const getActionType = (action: string) => {
-        const normalized = action.toLowerCase();
+    const getActionType = (action?: string | null) => {
+        const normalized = String(action ?? "").toLowerCase();
+
         const match = ACTION_RULES.find((r) =>
             r.keywords.some((k) => normalized.includes(k))
         );
+
         return match || { label: "אחר", color: "info" };
     };
 
@@ -59,21 +59,50 @@ export function useTransactionFilter(user: User) {
         const fetchHistory = async () => {
             setLoading(true);
             setError("");
+
             try {
-                const res: ApiResponse = await api.getTransactionHistory(user);
+                const res: ApiResponse = await api.getHistory();
                 const full = res as any;
-                if (res.success && Array.isArray(full.history)) {
-                    const sorted = full.history
-                        .filter((item: any) => typeof item === "object")
-                        .sort(
-                            (a: any, b: any) =>
-                                new Date(b.transaction_date).getTime() -
-                                new Date(a.transaction_date).getTime()
-                        );
-                    setHistory(sorted);
-                } else {
+
+                if (!res.success || !Array.isArray(full.history)) {
                     setError(res.message || "שגיאה בטעינת היסטוריית פעולות");
+                    return;
                 }
+
+                const normalized: Transaction[] = full.history
+                    .filter((x: any) => x && typeof x === "object")
+                    .map((t: any) => {
+                        const action_type =
+                            t.action_type ??
+                            t.type ??
+                            t.action ??
+                            t.tx_type ??
+                            "";
+
+                        const rawDate =
+                            t.transaction_date ??
+                            t.created_at ??
+                            t.date ??
+                            t.timestamp ??
+                            "";
+
+                        const transaction_date =
+                            typeof rawDate === "number"
+                                ? new Date(rawDate > 1e12 ? rawDate : rawDate * 1000).toISOString()
+                                : String(rawDate ?? "");
+
+                        const amount = String(t.amount ?? t.sum ?? t.value ?? "0");
+
+                        const description = String(t.description ?? t.details ?? t.note ?? "");
+
+                        return { action_type, amount, description, transaction_date };
+                    });
+
+                const sorted = normalized.sort(
+                    (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+                );
+
+                setHistory(sorted);
             } catch (err) {
                 console.error("שגיאה בטעינת היסטוריית פעולות:", err);
                 setError("שגיאה בטעינת היסטוריית פעולות.");
@@ -83,9 +112,8 @@ export function useTransactionFilter(user: User) {
         };
 
         fetchHistory();
-    }, [user.phone, user.idNum, user.secret]);
+    }, [user]);
 
-    // סינון ומיון
     const sortedAndFiltered = useMemo(
         () =>
             filterAndSortTransactions(

@@ -8,15 +8,15 @@ import {
 } from "@mui/material";
 import FormFields from "../forms/FormFields";
 import { useUserForm } from "../../hooks/useUserForm";
-import type { User } from "../../types";
+import type { UserMe, UserFormData } from "../../types";
 
 interface Props {
-    initialData: User;
+    initialData: UserMe;
     readOnly: boolean;
     loading?: boolean;
     onEdit: () => void;
     onCancel: () => void;
-    onSave: (data: User) => void;
+    onSave: (data: UserFormData) => void;
 }
 
 export default function UserForm({
@@ -27,8 +27,7 @@ export default function UserForm({
     onCancel,
     onSave,
 }: Props) {
-
-    const { data, errors, onChange, validate } = useUserForm(initialData, false);
+    const { data, errors, onChange, validate } = useUserForm(initialData, "profile");
 
     return (
         <Box display="flex" justifyContent="center" py={4} sx={{ bgcolor: "#f5f7fa" }}>

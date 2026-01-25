@@ -1,12 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
-import {
-    Typography,
-    Box,
-    CircularProgress,
-    Chip,
-} from "@mui/material";
+import { Typography, Box, CircularProgress, Chip } from "@mui/material";
 import { motion } from "framer-motion";
-import type { User, ApiResponse } from "../../types";
+import type { ApiResponse } from "../../types";
 import * as api from "../../api/adminApi";
 import DataTable, { type Column } from "../tables/DataTable";
 
@@ -18,7 +13,7 @@ interface UserRow {
     name: string;
 }
 
-export default function AdminUsersPage({ user }: { user: User }) {
+export default function AdminUsersPage() {
     const [users, setUsers] = useState<UserRow[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -27,15 +22,18 @@ export default function AdminUsersPage({ user }: { user: User }) {
         const fetchUsers = async () => {
             try {
                 setLoading(true);
-                const res: ApiResponse = await api.getAllUsers(user as any);
+                setError("");
 
-                if (res.success && Array.isArray((res as any).users)) {
-                    const normalized: UserRow[] = (res as any).users.map((u: any) => ({
-                        phone: u.phone_number,
-                        idNum: u.id_number,
-                        balance: u.balance,
-                        role: u.role,
-                        name: u.name,
+                const res: ApiResponse = await api.getAllUsers();
+
+                const list = (res as any).users;
+                if (res.success && Array.isArray(list)) {
+                    const normalized: UserRow[] = list.map((u: any) => ({
+                        phone: u.phone_number ?? u.phone ?? "",
+                        idNum: u.id_number ?? u.idNum ?? "",
+                        balance: Number(u.balance ?? 0),
+                        role: u.role === "admin" ? "admin" : "user",
+                        name: u.name ?? "",
                     }));
                     setUsers(normalized);
                 } else {
@@ -50,48 +48,39 @@ export default function AdminUsersPage({ user }: { user: User }) {
         };
 
         fetchUsers();
-    }, [user.phone, user.secret]);
+    }, []);
 
-    const columns: Column<UserRow>[] = useMemo(() => [
-        {
-            key: "name",
-            label: "שם",
-            align: "right"
-        },
-        {
-            key: "phone",
-            label: "טלפון",
-            align: "center"
-        },
-        {
-            key: "idNum",
-            label: "תעודת זהות",
-            align: "center"
-        },
-        {
-            key: "balance",
-            label: "יתרה",
-            align: "left",
-            render: (value: any) => (
-                <Typography fontWeight="bold" color={value > 0 ? "primary" : "text.secondary"}>
-                    {value} ₪
-                </Typography>
-            ),
-        },
-        {
-            key: "role",
-            label: "תפקיד",
-            align: "center",
-            render: (value: any) => (
-                <Chip
-                    label={value === "admin" ? "מנהל" : "משתמש"}
-                    color={value === "admin" ? "primary" : "default"}
-                    variant="outlined"
-                    size="small"
-                />
-            ),
-        },
-    ], []);
+    const columns: Column<UserRow>[] = useMemo(
+        () => [
+            { key: "name", label: "שם", align: "right" },
+            { key: "phone", label: "טלפון", align: "center" },
+            { key: "idNum", label: "תעודת זהות", align: "center" },
+            {
+                key: "balance",
+                label: "יתרה",
+                align: "left",
+                render: (value: any) => (
+                    <Typography fontWeight="bold" color={Number(value) > 0 ? "primary" : "text.secondary"}>
+                        {value} ₪
+                    </Typography>
+                ),
+            },
+            {
+                key: "role",
+                label: "תפקיד",
+                align: "center",
+                render: (value: any) => (
+                    <Chip
+                        label={value === "admin" ? "מנהל" : "משתמש"}
+                        color={value === "admin" ? "primary" : "default"}
+                        variant="outlined"
+                        size="small"
+                    />
+                ),
+            },
+        ],
+        []
+    );
 
     if (loading)
         return (
@@ -126,7 +115,7 @@ export default function AdminUsersPage({ user }: { user: User }) {
                 rows={users}
                 emptyMessage="אין משתמשים להצגה"
                 sortable
-                initialSort={{ column: 'balance' as keyof UserRow, direction: 'desc' }}
+                initialSort={{ column: "balance" as keyof UserRow, direction: "desc" }}
             />
         </Box>
     );

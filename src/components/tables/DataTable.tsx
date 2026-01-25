@@ -83,8 +83,6 @@ export default function DataTable<T extends Record<string, any>>({
         );
     }
 
-    // Sorting: support controlled and uncontrolled modes. If controlled props are provided
-    // (sortColumn/sortDirection/onSort) use them. Otherwise, maintain internal state.
     const [internalSortColumn, setInternalSortColumn] = useState<keyof T | null>(
         initialSort?.column ?? null
     );
@@ -96,16 +94,13 @@ export default function DataTable<T extends Record<string, any>>({
     const activeSortDirection: "asc" | "desc" | null = sortDirection !== undefined ? (sortDirection ?? null) : internalSortDirection;
 
     const handleSortRequest = (column: keyof T, nextDirection?: "asc" | "desc") => {
-        // If nextDirection is supplied (from the header), prefer it — makes intent explicit.
         if (onSort) {
             const isSame = activeSortColumn === column;
-            // if parent provided explicit nextDirection, forward it; otherwise compute toggle/new behavior
             const computedNext = nextDirection ?? (isSame ? (activeSortDirection === "asc" ? "desc" : "asc") : "asc");
             onSort(column, computedNext);
             return;
         }
 
-        // uncontrolled mode: if nextDirection was provided, honor it; otherwise use toggle/new rules
         if (nextDirection) {
             setInternalSortColumn(column);
             setInternalSortDirection(nextDirection);
@@ -126,36 +121,33 @@ export default function DataTable<T extends Record<string, any>>({
         if (!activeSortColumn) return rows;
 
         const sorted = [...rows].sort((a, b) => {
-                const aValue = a[activeSortColumn as keyof T];
-                const bValue = b[activeSortColumn as keyof T];
+            const aValue = a[activeSortColumn as keyof T];
+            const bValue = b[activeSortColumn as keyof T];
 
-                const toStr = (v: any) => (v === null || v === undefined ? "" : String(v));
-                const tryParseNumber = (v: any) => {
-                    if (v === null || v === undefined) return NaN;
-                    const cleaned = String(v).replace(/[^0-9+\-.,eE]/g, '').replace(/,/g, '.');
-                    const n = parseFloat(cleaned);
-                    return Number.isFinite(n) ? n : NaN;
-                };
+            const toStr = (v: any) => (v === null || v === undefined ? "" : String(v));
+            const tryParseNumber = (v: any) => {
+                if (v === null || v === undefined) return NaN;
+                const cleaned = String(v).replace(/[^0-9+\-.,eE]/g, '').replace(/,/g, '.');
+                const n = parseFloat(cleaned);
+                return Number.isFinite(n) ? n : NaN;
+            };
 
-                // numeric comparison (also handles numeric strings / amounts with currency symbols)
-                const aNum = tryParseNumber(aValue);
-                const bNum = tryParseNumber(bValue);
-                if (!isNaN(aNum) && !isNaN(bNum)) {
-                    return activeSortDirection === "asc" ? aNum - bNum : bNum - aNum;
-                }
+            const aNum = tryParseNumber(aValue);
+            const bNum = tryParseNumber(bValue);
+            if (!isNaN(aNum) && !isNaN(bNum)) {
+                return activeSortDirection === "asc" ? aNum - bNum : bNum - aNum;
+            }
 
-                // date comparison
-                const aTime = new Date(toStr(aValue)).getTime();
-                const bTime = new Date(toStr(bValue)).getTime();
-                if (!isNaN(aTime) && !isNaN(bTime)) {
-                    return activeSortDirection === "asc" ? aTime - bTime : bTime - aTime;
-                }
+            const aTime = new Date(toStr(aValue)).getTime();
+            const bTime = new Date(toStr(bValue)).getTime();
+            if (!isNaN(aTime) && !isNaN(bTime)) {
+                return activeSortDirection === "asc" ? aTime - bTime : bTime - aTime;
+            }
 
-                // fallback to locale-aware string comparison (numeric-sensitive)
-                const astr = toStr(aValue).trim();
-                const bstr = toStr(bValue).trim();
-                const cmp = astr.localeCompare(bstr, "he-IL", { numeric: true, sensitivity: "base" });
-                return activeSortDirection === "asc" ? cmp : -cmp;
+            const astr = toStr(aValue).trim();
+            const bstr = toStr(bValue).trim();
+            const cmp = astr.localeCompare(bstr, "he-IL", { numeric: true, sensitivity: "base" });
+            return activeSortDirection === "asc" ? cmp : -cmp;
         });
 
         return sorted;
@@ -187,11 +179,7 @@ export default function DataTable<T extends Record<string, any>>({
                     >
                         {columns.map((col, i) => {
                             const keyStr = col.key ? String(col.key) : `col-${i}`;
-                            // If the column is a data column (has a key) and sorting is enabled
-                            // either by the `sortable` prop or by controlled sort props - render
-                            // a SortableTableCell.
                             if (isDataColumn<T>(col) && (sortable || sortColumn !== undefined || onSort)) {
-                                // ensure the column key is used as string for the SortableTableCell
                                 const columnKey = String(col.key) as unknown as string;
                                 return (
                                     <SortableTableCell

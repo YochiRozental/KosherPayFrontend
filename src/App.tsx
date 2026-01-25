@@ -84,7 +84,7 @@ export default function App() {
                       />
                       <Route
                         path="/admin/users"
-                        element={<AdminUsersPage user={user} />}
+                        element={<AdminUsersPage />}
                       />
                       <Route path="*" element={<Navigate to="/account-actions" replace />} />
                     </Routes>

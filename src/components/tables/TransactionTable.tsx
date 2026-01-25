@@ -48,17 +48,22 @@ export default function TransactionTable({
       key: "amount" as keyof Transaction,
       label: "סכום",
       render: (v: any, row: Transaction) => {
-        const { color } = getActionType(row.action_type);
-        const isCredit = color === "primary" || color === "warning";
-        const amountColor = isCredit ? 'green' : 'red';
-        const prefix = isCredit ? "+" : "-";
+        const t = String(row.action_type ?? "").toLowerCase();
+
+        const isCredit = t === "deposit";
+
+        const isDebit = t === "withdraw" || t === "transfer";
+
+        const amountColor = isCredit ? "green" : isDebit ? "red" : "inherit";
+        const prefix = isCredit ? "+" : isDebit ? "-" : "";
+
         return (
           <span style={{ color: amountColor, fontWeight: "bold", direction: "ltr" }}>
             {prefix} {v} ₪
           </span>
         );
       },
-    },
+    }
   ];
 
   return (

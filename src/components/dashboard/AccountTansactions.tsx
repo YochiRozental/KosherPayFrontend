@@ -8,7 +8,7 @@ import {
     CardContent,
     Typography
 } from "@mui/material";
-import type { User } from "../../types";
+import type { UserMe } from "../../types";
 import type { ReactNode } from "react";
 
 interface ActionCardProps {
@@ -28,12 +28,12 @@ function ActionCard({ title, children }: ActionCardProps) {
 }
 
 interface ActionsSectionProps {
-    user: User;
+    user: UserMe;
     onApiCall: (apiFunc: () => Promise<any>) => Promise<void>;
     isLoading: boolean;
 }
 
-export default function ActionsSection({ user, onApiCall, isLoading }: ActionsSectionProps) {
+export default function ActionsSection({ onApiCall, isLoading }: ActionsSectionProps) {
     const [depositAmount, setDepositAmount] = useState("");
     const [withdrawAmount, setWithdrawAmount] = useState("");
     const [transferDetails, setTransferDetails] = useState({ recipient: "", amount: "" });
@@ -46,16 +46,16 @@ export default function ActionsSection({ user, onApiCall, isLoading }: ActionsSe
             switch (action) {
                 case 'deposit':
                     amount = +depositAmount;
-                    return () => api.depositFunds(user, amount);
+                    return () => api.depositFunds(amount);
                 case 'withdraw':
                     amount = +withdrawAmount;
-                    return () => api.withdrawFunds(user, amount);
+                    return () => api.withdrawFunds(amount);
                 case 'transfer':
                     amount = +transferDetails.amount;
-                    return () => api.transferFunds(user, transferDetails.recipient, amount);
+                    return () => api.transferFunds(transferDetails.recipient, amount);
                 case 'request':
                     amount = +paymentRequest.amount;
-                    return () => api.requestPayment(user, paymentRequest.phone, amount);
+                    return () => api.requestPayment(paymentRequest.phone, amount);
                 default:
                     return () => Promise.reject(new Error("Unknown action"));
             }

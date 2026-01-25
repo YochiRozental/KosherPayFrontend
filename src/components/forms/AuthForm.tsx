@@ -27,7 +27,7 @@ export default function AuthForm({
 
     const isReg = mode === "register";
 
-    const { data, errors, onChange, validate } = useUserForm(undefined, isReg);
+    const { data, errors, onChange, validate } = useUserForm(undefined, isReg ? "register" : "login");
 
     const handleSubmit = (e: any) => {
         e.preventDefault();

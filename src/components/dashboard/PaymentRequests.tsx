@@ -5,23 +5,23 @@ import {
   respondToRequest,
 } from "../../features/requests/paymentRequestsThunks";
 import PaymentRequestsTable from "../tables/PaymentRequestsTable";
-import type { User } from "../../types";
+import type { UserMe } from "../../types";
 import type { RootState, AppDispatch } from "../../app/store";
 
-export default function PaymentRequests({ user }: { user: User }) {
+export default function PaymentRequests({ user }: { user: UserMe }) {
   const dispatch = useDispatch<AppDispatch>();
   const { incoming: requests, loading, error } = useSelector(
     (state: RootState) => state.requests
   );
 
   useEffect(() => {
-    dispatch(fetchIncomingRequests(user));
+    dispatch(fetchIncomingRequests());
   }, [dispatch, user]);
 
-  const handleApprove = (id: number) =>
+  const handleApprove = (id: string) =>
     dispatch(respondToRequest({ user, requestId: id, accept: true }));
 
-  const handleReject = (id: number) =>
+  const handleReject = (id: string) =>
     dispatch(respondToRequest({ user, requestId: id, accept: false }));
 
   return (

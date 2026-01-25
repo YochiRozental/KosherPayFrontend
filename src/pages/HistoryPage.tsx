@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import TransactionHistory from "../components/dashboard/TransactionHistory";
-import type { User } from "../types/index";
+import type { UserMe } from "../types/index";
 
-export default function HistoryPage({ user }: { user: User; onLogout: () => void }) {
+export default function HistoryPage({ user }: { user: UserMe; onLogout: () => void }) {
   return (
     <Box sx={{ display: "flex", direction: "rtl", minHeight: "100vh" }}>
       <Box sx={{ flexGrow: 1, p: 3 }}>

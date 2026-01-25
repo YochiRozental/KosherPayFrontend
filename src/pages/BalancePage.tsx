@@ -6,10 +6,10 @@ import {
     Card,
     useTheme
 } from "@mui/material";
-import * as api from "../api/userApi";
-import type { User } from "../types";
+import * as api from "../api/paymentsApi";
+import type { UserMe } from "../types";
 
-export default function BalancePage({ user }: { user: User; onLogout: () => void }) {
+export default function BalancePage({ user }: { user: UserMe; onLogout: () => void }) {
     const [balance, setBalance] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -21,7 +21,7 @@ export default function BalancePage({ user }: { user: User; onLogout: () => void
             setError(null);
             setBalance(null);
             try {
-                const res = await api.checkBalance(user);
+                const res = await api.getBalance();
                 setBalance(Number(res.balance) || 0);
             } catch (err) {
                 console.error("שגיאה בטעינת יתרה:", err);
@@ -31,7 +31,7 @@ export default function BalancePage({ user }: { user: User; onLogout: () => void
             }
         };
         loadBalance();
-    }, [user.phone, user.idNum, user.secret]);
+    }, [user.phone, user.id]);
 
     return (
         <Box sx={{ display: "flex", minHeight: "100vh", direction: "rtl" }}>

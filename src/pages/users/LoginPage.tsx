@@ -12,7 +12,7 @@ export default function LoginPage() {
     const submit = async (data: any) => {
         try {
             const r = await dispatch(loginUser(data)).unwrap();
-            if (r) navigate("/profile");
+            if (r) navigate("/account-actions");
         } catch (e: any) {
             setErr(e || "שגיאה בהתחברות");
         }

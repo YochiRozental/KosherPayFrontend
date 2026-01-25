@@ -1,67 +1,59 @@
-import { makeWebApiRequest } from "./clientApi";
-import type { User } from "../types";
+import api from "./httpApi";
+import type { ApiResponse, ListResponse, RequestItem } from "../types";
 
-export const depositFunds = (user: User, amount: number) =>
-    makeWebApiRequest({
-        action: "deposit",
-        phone_number: user.phone,
-        id_number: user.idNum,
-        secret_code: user.secret,
-        amount,
-    });
+export const getBalance = async (): Promise<ApiResponse<any>> => {
+  const res = await api.get("/api/web/balance");
+  return res.data;
+};
 
-export const withdrawFunds = (user: User, amount: number) =>
-    makeWebApiRequest({
-        action: "withdraw",
-        phone_number: user.phone,
-        id_number: user.idNum,
-        secret_code: user.secret,
-        amount,
-    });
+export const getHistory = async (limit = 20, offset = 0): Promise<ApiResponse<any>> => {
+  const res = await api.get("/api/web/history", {
+    params: { limit, offset },
+  });
+  return res.data;
+};
 
-export const transferFunds = (user: User, recipientPhone: string, amount: number) =>
-    makeWebApiRequest({
-        action: "transfer",
-        phone_number: user.phone,
-        id_number: user.idNum,
-        secret_code: user.secret,
-        recipient_phone: recipientPhone,
-        amount,
-    });
+export const depositFunds = async (amount: number): Promise<ApiResponse<any>> => {
+  const res = await api.post("/api/web/deposit", { amount });
+  return res.data;
+};
 
-export const requestPayment = (user: User, recipientPhone: string, amount: number) =>
-    makeWebApiRequest({
-        action: "request_payment",
-        phone_number: user.phone,
-        id_number: user.idNum,
-        secret_code: user.secret,
-        recipient_phone: recipientPhone,
-        amount,
-    });
+export const withdrawFunds = async (amount: number): Promise<ApiResponse<any>> => {
+  const res = await api.post("/api/web/withdraw", { amount });
+  return res.data;
+};
 
-export const approvePayment = (user: User, requestId: number) =>
-    makeWebApiRequest({
-        action: "approve_payment",
-        phone_number: user.phone,
-        id_number: user.idNum,
-        secret_code: user.secret,
-        request_id: requestId,
-    });
+export const transferFunds = async (recipientPhone: string, amount: number): Promise<ApiResponse<any>> => {
+  const res = await api.post("/api/web/transfer", {
+    recipient_phone: recipientPhone,
+    amount,
+  });
+  return res.data;
+};
 
-export const rejectPayment = (user: User, requestId: number) =>
-    makeWebApiRequest({
-        action: "reject_payment",
-        phone_number: user.phone,
-        id_number: user.idNum,
-        secret_code: user.secret,
-        request_id: requestId,
-    });
+export const requestPayment = async (recipientPhone: string, amount: number): Promise<ApiResponse<any>> => {
+  const res = await api.post("/api/web/request_payment", {
+    recipient_phone: recipientPhone,
+    amount,
+  });
+  return res.data;
+};
 
-export const respondToPaymentRequest = (user: User, requestId: number, accept: boolean) =>
-    makeWebApiRequest({
-        action: accept ? "approve_payment" : "reject_payment",
-        phone_number: user.phone,
-        id_number: user.idNum,
-        secret_code: user.secret,
-        request_id: requestId
-    });
+export const respondToPaymentRequest = async (requestId: string | number, accept: boolean): Promise<ApiResponse<any>> => {
+  const url = accept
+    ? `/api/web/payment_requests/${requestId}/approve`
+    : `/api/web/payment_requests/${requestId}/reject`;
+
+  const res = await api.post(url);
+  return res.data;
+};
+
+export const getIncomingPaymentRequests = async (): Promise<ListResponse<RequestItem>> => {
+  const res = await api.get("/api/web/payment_requests");
+  return res.data;
+};
+
+export const getSentPaymentRequests = async (): Promise<ListResponse<RequestItem>> => {
+  const res = await api.get("/api/web/payment_requests_sent");
+  return res.data;
+};

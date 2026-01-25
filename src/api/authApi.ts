@@ -1,39 +1,13 @@
-import type { User } from "../types";
-import { makeWebApiRequest } from "./clientApi";
+import api from "./httpApi";
+import type { LoginPayload, RegisterPayload, ApiResponse } from "../types";
 
-export const openAccount = (phone: string, idNum: string, secret: string, name: string, bankNumber: string, branchNumber: string, accountNumber: string) =>
-    makeWebApiRequest({
-        action: "open_account",
-        phone_number: phone,
-        id_number: idNum,
-        secret_code: secret,
-        name,
-        bank_number: bankNumber,
-        branch_number: branchNumber,
-        account_number: accountNumber,
-    });
+export const loginUser = async (phone_number: string, secret_code: string): Promise<ApiResponse<any>> => {
+  const payload: LoginPayload = { phone_number, secret_code };
+  const res = await api.post("/api/web/login", payload);
+  return res.data;
+};
 
-export const loginUser = (phone: string, idNum: string, secret: string) =>
-    makeWebApiRequest({
-        action: "authenticate",
-        phone_number: phone,
-        id_number: idNum,
-        secret_code: secret,
-    });
-
-export const updateUser = (user: User) =>
-    makeWebApiRequest({
-        action: "update_user",
-
-        phone_number: user.phone,
-        id_number: user.idNum,
-        secret_code: user.secret,
-
-        name: user.name,
-        secret: user.secret,
-
-        bank_number: user.bankAccount.bankNumber,
-        branch_number: user.bankAccount.branchNumber,
-        account_number: user.bankAccount.accountNumber,
-        account_holder_name: user.bankAccount.accountOwner,
-    });
+export const registerUser = async (payload: RegisterPayload): Promise<ApiResponse<any>> => {
+  const res = await api.post("/api/web/open_account", payload);
+  return res.data;
+};

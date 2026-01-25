@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Box, Typography, Alert, Snackbar } from "@mui/material";
 import ActionsSection from "../components/dashboard/AccountTansactions";
-import type { User } from "../types";
+import type { UserMe } from "../types";
 
-export default function ActionsPage({ user }: { user: User; onLogout: () => void }) {
+export default function ActionsPage({ user }: { user: UserMe; onLogout: () => void }) {
     const [isLoading, setIsLoading] = useState(false);
     const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: "success" | "error" | "info" }>({
         open: false,
@@ -15,9 +15,18 @@ export default function ActionsPage({ user }: { user: User; onLogout: () => void
         setIsLoading(true);
         try {
             const res = await apiFunc();
-
             if (res && res.success) {
-                setSnackbar({ open: true, message: "הפעולה בוצעה בהצלחה! היתרה תתעדכן בקרוב.", severity: "success" });
+                try {
+                    const { getBalance } = await import("../api/paymentsApi");
+                    await getBalance();
+                } catch { }
+
+                setSnackbar({
+                    open: true,
+                    message: "הפעולה בוצעה בהצלחה! היתרה עודכנה.",
+                    severity: "success",
+                });
+
             } else {
 
                 setSnackbar({ open: true, message: res?.message || "שגיאה בביצוע הפעולה.", severity: "error" });

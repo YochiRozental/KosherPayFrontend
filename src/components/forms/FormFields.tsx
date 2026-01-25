@@ -8,7 +8,6 @@ import {
 
 import PersonIcon from "@mui/icons-material/Person";
 import PhoneIcon from "@mui/icons-material/Phone";
-import BadgeIcon from "@mui/icons-material/Badge";
 import LockIcon from "@mui/icons-material/Lock";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
@@ -33,7 +32,7 @@ export default function FormFields({
     const baseProps = (name: string, label: string, icon: any, extra: any = {}, autocomplete?: string) => ({
         label,
         name,
-        value: data[name],
+        value: data?.[name] ?? "",
         onChange,
         fullWidth: true,
         disabled: readOnly,
@@ -58,9 +57,8 @@ export default function FormFields({
             <Typography variant="h6">פרטים אישיים</Typography>
             <Divider />
 
-            <TextField {...baseProps("name", "שם מלא", <PersonIcon />, {}, "name")} />
+            <TextField {...baseProps("name", "שם מלא", <PersonIcon />)} />
             <TextField {...baseProps("phone", "טלפון", <PhoneIcon />, {}, "tel-national")} />
-            <TextField {...baseProps("idNum", "תעודת זהות", <BadgeIcon />, {}, "tel-national")} />
             <TextField {...baseProps("secret", "קוד סודי", <LockIcon />, { type: "password" }, "new-password")} />
 
             {showBankFields && (

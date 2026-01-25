@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import PaymentRequestsList from "../components/dashboard/PaymentRequests";
-import type { User } from "../types/index";
+import type { UserMe } from "../types/index";
 
-export default function RequestsPage({ user }: { user: User; onLogout: () => void }) {
+export default function RequestsPage({ user }: { user: UserMe; onLogout: () => void }) {
   return (
     <Box sx={{ display: "flex", direction: "rtl", minHeight: "100vh" }}>
 
