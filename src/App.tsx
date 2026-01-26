@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { setOnUnauthorized } from "./api/authEvents";
 import { ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -26,6 +27,14 @@ import EditProfilePage from "./pages/users/EditProfilePage";
 export default function App() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    const unsubscribe = setOnUnauthorized(() => {
+      dispatch(logout());
+    });
+    return unsubscribe;
+  }, [dispatch]);
+
 
   useEffect(() => {
     if (user) {

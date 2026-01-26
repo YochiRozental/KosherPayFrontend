@@ -1,8 +1,9 @@
 import axios from "axios";
+import { triggerUnauthorizedLogout } from "./authEvents";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL as string;
 
-export const api = axios.create({
+const api = axios.create({
   baseURL,
   timeout: 15000,
 });
@@ -18,7 +19,15 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (res) => res,
-  (error) => Promise.reject(error)
+  (error) => {
+    const status = error?.response?.status;
+
+    if (status === 401) {
+      triggerUnauthorizedLogout();
+    }
+
+    return Promise.reject(error);
+  }
 );
 
 export default api;
