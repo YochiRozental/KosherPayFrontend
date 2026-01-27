@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as authApi from "../../api/authApi";
 import * as meApi from "../../api/meApi";
-import type { RegisterPayload, UpdateMePayload, UserMe, UserMeApiResponse } from "../../types";
+import type { RegisterPayload, UpdateMePayload, UserMe, UserMeApiResponse, UserFormData } from "../../types";
 
 type RejectValue = string;
 
@@ -62,10 +62,19 @@ export const updateUser = createAsyncThunk<UserMe, UpdateMePayload, { rejectValu
   }
 );
 
-export const registerUser = createAsyncThunk<UserMe, RegisterPayload, { rejectValue: RejectValue }>(
+export const registerUser = createAsyncThunk<UserMe, UserFormData, { rejectValue: RejectValue }>(
   "auth/registerUser",
-  async (payload, { rejectWithValue }) => {
+  async (form, { rejectWithValue }) => {
     try {
+      const payload: RegisterPayload = {
+        phone_number: form.phone,
+        secret_code: form.secret ?? "",
+        name: form.name,
+        bank_number: form.bankAccount?.bankNumber ?? "",
+        branch_number: form.bankAccount?.branchNumber ?? "",
+        account_number: form.bankAccount?.accountNumber ?? "",
+      };
+
       const res = await authApi.registerUser(payload);
       if (!res?.success) return rejectWithValue(res?.message || "שגיאה בהרשמה");
 

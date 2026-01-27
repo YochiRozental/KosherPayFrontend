@@ -14,8 +14,8 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
 interface Props {
-    data: any;
-    errors: any;
+    data: Record<string, any> | null;
+    errors: Record<string, string> | null;
     onChange: (e: any) => void;
     readOnly?: boolean;
     showBankFields?: boolean;
@@ -29,17 +29,24 @@ export default function FormFields({
     showBankFields = false,
 }: Props) {
 
-    const baseProps = (name: string, label: string, icon: any, extra: any = {}, autocomplete?: string) => ({
+    const bank = data?.bankAccount ?? {
+        bankNumber: "",
+        branchNumber: "",
+        accountNumber: "",
+        accountHolder: "",
+    };
+
+    const baseProps = (name: string, label: string, icon: any, extra: any = {}, autoComplete?: string) => ({
         label,
         name,
         value: data?.[name] ?? "",
         onChange,
         fullWidth: true,
         disabled: readOnly,
-        error: !!errors[name],
-        helperText: errors[name] || "",
+        error: !!errors?.[name],
+        helperText: errors?.[name] || "",
         inputProps: {
-            autocomplete: autocomplete || 'off',
+            autoComplete: autoComplete || 'off',
         },
         InputProps: {
             startAdornment: (
@@ -72,13 +79,13 @@ export default function FormFields({
                         <TextField
                             label="מספר בנק"
                             name="bankNumber"
-                            value={data.bankAccount.bankNumber}
+                            value={bank.bankNumber}
                             onChange={onChange}
                             disabled={readOnly}
-                            error={!!errors.bankNumber}
-                            helperText={errors.bankNumber}
+                            error={!!errors?.bankNumber}
+                            helperText={errors?.bankNumber}
                             fullWidth
-                            inputProps={{ autocomplete: 'off' }}
+                            inputProps={{ autoComplete: 'off' }}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -91,13 +98,13 @@ export default function FormFields({
                         <TextField
                             label="מספר סניף"
                             name="branchNumber"
-                            value={data.bankAccount.branchNumber}
+                            value={bank.branchNumber}
                             onChange={onChange}
                             disabled={readOnly}
-                            error={!!errors.branchNumber}
-                            helperText={errors.branchNumber}
+                            error={!!errors?.branchNumber}
+                            helperText={errors?.branchNumber}
                             fullWidth
-                            inputProps={{ autocomplete: 'off' }}
+                            inputProps={{ autoComplete: 'off' }}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -108,17 +115,16 @@ export default function FormFields({
                             }}
                         />
                     </Stack>
-
                     <TextField
                         label="מספר חשבון"
                         name="accountNumber"
-                        value={data.bankAccount.accountNumber}
+                        value={bank.accountNumber}
                         onChange={onChange}
                         disabled={readOnly}
-                        error={!!errors.accountNumber}
-                        helperText={errors.accountNumber}
+                        error={!!errors?.accountNumber}
+                        helperText={errors?.accountNumber}
                         fullWidth
-                        inputProps={{ autocomplete: 'off' }}
+                        inputProps={{ autoComplete: 'off' }}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
@@ -128,17 +134,16 @@ export default function FormFields({
                             readOnly,
                         }}
                     />
-
                     <TextField
                         label="שם בעל החשבון"
-                        name="accountOwner"
-                        value={data.bankAccount.accountOwner}
+                        name="accountHolder"
+                        value={bank.accountHolder}
                         onChange={onChange}
                         disabled={readOnly}
-                        error={!!errors.accountOwner}
-                        helperText={errors.accountOwner}
+                        error={!!errors?.accountHolder}
+                        helperText={errors?.accountHolder}
                         fullWidth
-                        inputProps={{ autocomplete: 'off' }}
+                        inputProps={{ autoComplete: 'off' }}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">

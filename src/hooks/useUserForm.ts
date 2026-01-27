@@ -3,39 +3,59 @@ import type { UserMe, UserFormData } from "../types";
 
 type Mode = "login" | "register" | "profile";
 
+const emptyForm = (): UserFormData => ({
+  id: "",
+  name: "",
+  phone: "",
+  secret: "",
+  balance: "0",
+  role: "user",
+  bankAccount: {
+    accountNumber: "",
+    bankNumber: "",
+    branchNumber: "",
+    accountHolder: "",
+  },
+});
+
+function mapUserMeToForm(initial: UserMe): UserFormData {
+  return {
+    ...emptyForm(),
+    id: initial.id ?? "",
+    name: initial.name ?? "",
+    phone: initial.phone ?? "",
+    role: initial.role ?? "user",
+    balance: initial.balance ?? "0",
+    secret: "",
+    bankAccount: {
+      bankNumber: initial.bankAccount?.bankNumber ?? "",
+      branchNumber: initial.bankAccount?.branchNumber ?? "",
+      accountNumber: initial.bankAccount?.accountNumber ?? "",
+      accountHolder: initial.bankAccount?.accountHolder ?? "",
+    },
+  };
+}
+
 export function useUserForm(initial?: UserMe, mode: Mode = "profile") {
   const isRegister = mode === "register";
   const isLogin = mode === "login";
 
-  const [data, setData] = useState<UserFormData>(
-    initial
-      ? { ...initial, secret: "" }
-      : {
-        id: "",
-        name: "",
-        phone: "",
-        secret: "",
-        balance: "0",
-        role: "user",
-        bankAccount: {
-          accountNumber: "",
-          bankNumber: "",
-          branchNumber: "",
-          accountHolder: "",
-        },
-      }
+  const [data, setData] = useState<UserFormData>(() =>
+    initial ? mapUserMeToForm(initial) : emptyForm()
   );
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (initial) setData({ ...initial, secret: "" });
+    if (initial) setData(mapUserMeToForm(initial));
   }, [initial]);
 
   const onChange = (e: any) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target as { name: string; value: string };
 
-    if (["bankNumber", "branchNumber", "accountNumber", "accountOwner"].includes(name)) {
+    const bankKeys = ["bankNumber", "branchNumber", "accountNumber", "accountHolder"];
+
+    if (bankKeys.includes(name)) {
       setData((prev) => ({
         ...prev,
         bankAccount: { ...prev.bankAccount, [name]: value },
@@ -44,11 +64,19 @@ export function useUserForm(initial?: UserMe, mode: Mode = "profile") {
       setData((prev) => ({
         ...prev,
         [name]: value,
-        bankAccount: name === "name" ? { ...prev.bankAccount, accountOwner: value } : prev.bankAccount,
+        bankAccount:
+          isRegister && name === "name"
+            ? { ...prev.bankAccount, accountHolder: value }
+            : prev.bankAccount,
       }));
     }
 
-    setErrors((p) => ({ ...p, [name]: "" }));
+    setErrors((prev) => {
+      if (!prev[name]) return prev;
+      const next = { ...prev };
+      delete next[name];
+      return next;
+    });
   };
 
   const validate = () => {
