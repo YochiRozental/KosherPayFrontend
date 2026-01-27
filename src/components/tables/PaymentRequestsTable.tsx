@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+
 import {
     Box,
     Typography,
@@ -10,9 +11,11 @@ import {
     useTheme,
 } from "@mui/material";
 import { motion } from "framer-motion";
+
 import DataTable from "./DataTable";
-import type { RequestItem } from "../../types";
+
 import type { Column } from "./DataTable";
+import type { RequestItem } from "../../types";
 
 interface PaymentRequestsPageProps {
     requests: RequestItem[];

@@ -1,6 +1,8 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { UserMe } from "../../types";
+
 import { loginUser, registerUser, updateUser, fetchMe } from "./authThunks";
+
+import type { UserMe } from "../../types";
 
 type AuthError = string | null;
 

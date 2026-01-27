@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
+
+import { filterAndSortTransactions } from "./utils/filterUtils";
+import * as api from "../../api/paymentsApi";
+
 import type { UserMe, Transaction, ApiResponse, DateFilter } from "../../types";
 import type { Dayjs } from "dayjs";
-import * as api from "../../api/paymentsApi";
-import { filterAndSortTransactions } from "./utils/filterUtils";
 
 export type SortDirection = "asc" | "desc";
 export type SortColumn = keyof Transaction;

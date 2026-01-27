@@ -6,8 +6,9 @@ import {
     Stack,
     Divider,
 } from "@mui/material";
-import FormFields from "../forms/FormFields";
+
 import { useUserForm } from "../../hooks/useUserForm";
+import FormFields from "../forms/FormFields";
 
 interface Props {
     mode: "login" | "register";

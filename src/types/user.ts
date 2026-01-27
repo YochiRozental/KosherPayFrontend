@@ -1,5 +1,5 @@
-import type { Role } from "./auth";
 import type { ApiResponse } from "./api";
+import type { Role } from "./auth";
 
 export interface UserFormData extends UserMe {
     secret?: string;

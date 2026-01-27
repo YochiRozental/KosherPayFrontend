@@ -1,4 +1,5 @@
 import api from "./httpApi";
+
 import type { UpdateMePayload, UserMeApiResponse, ApiResponse } from "../types";
 
 export const getMe = async (): Promise<UserMeApiResponse> => {

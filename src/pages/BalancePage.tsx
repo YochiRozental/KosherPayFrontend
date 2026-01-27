@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import {
     Box,
     Typography,
@@ -6,7 +7,9 @@ import {
     Card,
     useTheme
 } from "@mui/material";
+
 import * as api from "../api/paymentsApi";
+
 import type { UserMe } from "../types";
 
 export default function BalancePage({ user }: { user: UserMe; onLogout: () => void }) {

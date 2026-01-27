@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { RequestItem } from "../../types";
+
 import {
     fetchIncomingRequests,
     fetchSentRequests,
     respondToRequest,
     sendPaymentRequest,
 } from "./paymentRequestsThunks";
+
+import type { RequestItem } from "../../types";
 
 interface RequestsState {
     incoming: RequestItem[];

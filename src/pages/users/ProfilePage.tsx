@@ -1,9 +1,11 @@
 import { useState } from "react";
+
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import UserForm from "../../components/forms/UserForm";
 import { setUser } from "../../features/auth/authSlice";
 import { updateUser } from "../../features/auth/authThunks";
+
 import type { UserFormData } from "../../types";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 export default function ProfilePage() {
     const dispatch = useAppDispatch();

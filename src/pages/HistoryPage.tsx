@@ -1,5 +1,7 @@
 import { Box, Typography } from "@mui/material";
+
 import TransactionHistory from "../components/dashboard/TransactionHistory";
+
 import type { UserMe } from "../types/index";
 
 export default function HistoryPage({ user }: { user: UserMe; onLogout: () => void }) {

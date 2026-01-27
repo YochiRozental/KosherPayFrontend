@@ -1,5 +1,7 @@
 import { Box, Typography } from "@mui/material";
+
 import SentPaymentRequests from "../components/dashboard/SentPaymentRequests";
+
 import type { UserMe } from "../types";
 
 interface SentRequestsPageProps {

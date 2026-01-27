@@ -1,5 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+
 import * as paymentsApi from "../../api/paymentsApi";
+
 import type { UserMe, RequestItem } from "../../types";
 
 const normalizeRequest = (r: any, type: "incoming" | "sent"): RequestItem => ({

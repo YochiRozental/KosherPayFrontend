@@ -1,5 +1,5 @@
-import { createTheme, lighten } from "@mui/material/styles";
 import { heIL } from "@mui/material/locale";
+import { createTheme, lighten } from "@mui/material/styles";
 
 const theme = createTheme(
     {

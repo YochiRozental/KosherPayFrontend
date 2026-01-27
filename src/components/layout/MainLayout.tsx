@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+
 import Sidebar from "./Sidebar";
 
 export default function MainLayout({

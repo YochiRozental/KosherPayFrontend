@@ -1,7 +1,9 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
+
 import FilterBar from "../filters/FilterBar";
 import { useTransactionFilter } from "../filters/useTransactionFilter";
 import TransactionTable from "../tables/TransactionTable";
+
 import type { UserMe } from "../../types";
 
 export default function TransactionHistory({ user }: { user: UserMe }) {

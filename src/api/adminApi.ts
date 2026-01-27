@@ -1,4 +1,5 @@
 import api from "./httpApi";
+
 import type { UsersListResponse } from "../types";
 
 export const getAllUsers = async (): Promise<UsersListResponse> => {

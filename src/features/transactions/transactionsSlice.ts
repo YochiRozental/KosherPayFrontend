@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 import { fetchTransactions, createTransaction } from "./transactionsThunks";
 
 interface Transaction {

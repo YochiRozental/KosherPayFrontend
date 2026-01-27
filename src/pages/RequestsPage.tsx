@@ -1,5 +1,7 @@
 import { Box, Typography } from "@mui/material";
+
 import PaymentRequestsList from "../components/dashboard/PaymentRequests";
+
 import type { UserMe } from "../types/index";
 
 export default function RequestsPage({ user }: { user: UserMe; onLogout: () => void }) {

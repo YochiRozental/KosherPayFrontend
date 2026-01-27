@@ -1,17 +1,5 @@
 import React, { type JSX } from "react";
-import {
-    Drawer,
-    List,
-    ListItemButton,
-    ListItemText,
-    ListItemIcon,
-    Box,
-    Typography,
-    Divider,
-    IconButton,
-    useTheme,
-    useMediaQuery,
-} from "@mui/material";
+import { useState } from "react";
 
 import {
     Menu,
@@ -25,10 +13,22 @@ import {
     People,
     PersonOutline,
 } from "@mui/icons-material";
-import { useState } from "react";
+import {
+    Drawer,
+    List,
+    ListItemButton,
+    ListItemText,
+    ListItemIcon,
+    Box,
+    Typography,
+    Divider,
+    IconButton,
+    useTheme,
+    useMediaQuery,
+} from "@mui/material";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 const DRAWER_WIDTH = 280;
 

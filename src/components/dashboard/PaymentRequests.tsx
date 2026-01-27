@@ -1,12 +1,15 @@
 import { useEffect } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   fetchIncomingRequests,
   respondToRequest,
 } from "../../features/requests/paymentRequestsThunks";
 import PaymentRequestsTable from "../tables/PaymentRequestsTable";
-import type { UserMe } from "../../types";
+
 import type { RootState, AppDispatch } from "../../app/store";
+import type { UserMe } from "../../types";
 
 export default function PaymentRequests({ user }: { user: UserMe }) {
   const dispatch = useDispatch<AppDispatch>();

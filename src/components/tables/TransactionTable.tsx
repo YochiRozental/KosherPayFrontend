@@ -1,6 +1,8 @@
 import { Chip } from "@mui/material";
+
 import DataTable from "./DataTable";
 import { formatDateTime } from "../filters/utils/dateUtils";
+
 import type { Transaction } from "../../types";
 
 interface TransactionTableProps {

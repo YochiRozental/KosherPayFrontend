@@ -1,6 +1,9 @@
 import { useState } from "react";
+
 import { Box, Typography, Alert, Snackbar } from "@mui/material";
+
 import ActionsSection from "../components/dashboard/AccountTansactions";
+
 import type { UserMe } from "../types";
 
 export default function ActionsDashboardPage({ user }: { user: UserMe; onLogout: () => void }) {

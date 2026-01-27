@@ -1,3 +1,9 @@
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import LockIcon from "@mui/icons-material/Lock";
+import PersonIcon from "@mui/icons-material/Person";
+import PhoneIcon from "@mui/icons-material/Phone";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import {
     TextField,
     Stack,
@@ -5,13 +11,6 @@ import {
     Typography,
     InputAdornment,
 } from "@mui/material";
-
-import PersonIcon from "@mui/icons-material/Person";
-import PhoneIcon from "@mui/icons-material/Phone";
-import LockIcon from "@mui/icons-material/Lock";
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
 interface Props {
     data: Record<string, any> | null;

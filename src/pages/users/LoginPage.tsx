@@ -1,8 +1,10 @@
 import { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
+
+import { useAppDispatch } from "../../app/hooks";
 import AuthForm from "../../components/forms/AuthForm";
 import { loginUser } from "../../features/auth/authThunks";
-import { useAppDispatch } from "../../app/hooks";
 
 export default function LoginPage() {
     const dispatch = useAppDispatch();

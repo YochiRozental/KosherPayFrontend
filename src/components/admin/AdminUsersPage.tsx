@@ -1,9 +1,12 @@
 import { useEffect, useState, useMemo } from "react";
+
 import { Typography, Box, CircularProgress, Chip } from "@mui/material";
 import { motion } from "framer-motion";
-import type { ApiResponse } from "../../types";
+
 import * as api from "../../api/adminApi";
 import DataTable, { type Column } from "../tables/DataTable";
+
+import type { ApiResponse } from "../../types";
 
 interface UserRow {
     phone: string;
