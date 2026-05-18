@@ -88,6 +88,9 @@ export const registerUser = createAsyncThunk<
       bank_number: form.bankAccount?.bankNumber ?? "",
       branch_number: form.bankAccount?.branchNumber ?? "",
       account_number: form.bankAccount?.accountNumber ?? "",
+      additional_phones: (form.additionalPhones ?? [])
+        .map((p) => p.trim())
+        .filter(Boolean),
     };
 
     const res = await authApi.registerUser(payload);
@@ -106,6 +109,8 @@ export const registerUser = createAsyncThunk<
     const me: UserMeApiResponse = await meApi.getMe();
     if (!me.success)
       return rejectWithValue(me.message || "נרשמת אך טעינת פרופיל נכשלה");
+
+    console.log("ME RESPONSE:", me);
 
     return me.user;
   } catch (e: any) {

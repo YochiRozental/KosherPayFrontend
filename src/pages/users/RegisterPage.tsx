@@ -14,7 +14,10 @@ export default function RegisterPage() {
 
   const submit = async (data: UserFormData) => {
     const r = await dispatch(registerUser(data)).unwrap();
-    if (r) navigate("/profile");
+
+    if (r) {
+      navigate("/profile");
+    }
   };
 
   return (

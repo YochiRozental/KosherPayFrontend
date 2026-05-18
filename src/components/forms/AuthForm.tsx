@@ -24,10 +24,15 @@ export default function AuthForm({
   const isReg = mode === "register";
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const { data, errors, onChange, validate } = useUserForm(
-    undefined,
-    isReg ? "register" : "login",
-  );
+  const {
+    data,
+    errors,
+    onChange,
+    validate,
+    addAdditionalPhone,
+    removeAdditionalPhone,
+    changeAdditionalPhone,
+  } = useUserForm(undefined, isReg ? "register" : "login");
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -81,6 +86,9 @@ export default function AuthForm({
               errors={errors}
               onChange={onChange}
               showBankFields={isReg}
+              onAddAdditionalPhone={addAdditionalPhone}
+              onRemoveAdditionalPhone={removeAdditionalPhone}
+              onAdditionalPhoneChange={changeAdditionalPhone}
             />
 
             {shownError && (
