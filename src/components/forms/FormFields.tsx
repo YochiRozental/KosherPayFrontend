@@ -72,10 +72,6 @@ export default function FormFields({
     ...extra,
   });
 
-  const additionalPhones = (data?.additionalPhones ?? []).filter(
-    (phone: string) => phone?.trim(),
-  );
-
   const rawAdditionalPhones = data?.additionalPhones ?? [];
 
   const visibleAdditionalPhones = readOnly
