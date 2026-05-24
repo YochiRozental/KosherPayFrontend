@@ -62,14 +62,36 @@ export const fetchMe = createAsyncThunk<
 
 export const updateUser = createAsyncThunk<
   UserMe,
-  UpdateMePayload,
+  UserFormData,
   { rejectValue: RejectValue }
->("auth/updateUser", async (payload, { rejectWithValue }) => {
+>("auth/updateUser", async (form, { rejectWithValue }) => {
   try {
+    const payload: UpdateMePayload = {
+      name: form.name,
+      phone: form.phone,
+      secret_code: form.secret || undefined,
+
+      bank_number: form.bankAccount?.bankNumber ?? "",
+      branch_number: form.bankAccount?.branchNumber ?? "",
+      account_number: form.bankAccount?.accountNumber ?? "",
+      account_holder: form.bankAccount?.accountHolder ?? "",
+
+      additional_phones: (form.additionalPhones ?? [])
+        .map((p) => p.trim())
+        .filter(Boolean),
+    };
+
     const res: UserMeApiResponse = await meApi.updateMe(payload);
-    if (!res.success)
+
+    if (!res.success) {
       return rejectWithValue(res.message || "שגיאה בעדכון פרטים");
-    return res.user;
+    }
+
+    return {
+      ...res.user,
+      additionalPhones:
+        res.user.additionalPhones ?? (res.user as any).additional_phones ?? [],
+    };
   } catch (e: any) {
     return rejectWithValue(extractMsg(e, "שגיאה בעדכון פרטים"));
   }

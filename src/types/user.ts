@@ -15,6 +15,8 @@ export interface UpdateMePayload {
   branch_number?: string;
   account_number?: string;
   account_holder?: string;
+
+  additional_phones?: string[];
 }
 
 export type UserMe = {

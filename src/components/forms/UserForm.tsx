@@ -1,11 +1,4 @@
-import {
-    Box,
-    Paper,
-    Typography,
-    Button,
-    Stack,
-    Divider,
-} from "@mui/material";
+import { Box, Paper, Typography, Button, Stack, Divider } from "@mui/material";
 
 import { useUserForm } from "../../hooks/useUserForm";
 import FormFields from "../forms/FormFields";
@@ -13,65 +6,80 @@ import FormFields from "../forms/FormFields";
 import type { UserMe, UserFormData } from "../../types";
 
 interface Props {
-    initialData: UserMe;
-    readOnly: boolean;
-    loading?: boolean;
-    onEdit: () => void;
-    onCancel: () => void;
-    onSave: (data: UserFormData) => void;
+  initialData: UserMe;
+  readOnly: boolean;
+  loading?: boolean;
+  onEdit: () => void;
+  onCancel: () => void;
+  onSave: (data: UserFormData) => void;
 }
 
 export default function UserForm({
-    initialData,
-    readOnly,
-    loading,
-    onEdit,
-    onCancel,
-    onSave,
+  initialData,
+  readOnly,
+  loading,
+  onEdit,
+  onCancel,
+  onSave,
 }: Props) {
-    const { data, errors, onChange, validate } = useUserForm(initialData, "profile");
+  const {
+    data,
+    errors,
+    onChange,
+    validate,
+    addAdditionalPhone,
+    removeAdditionalPhone,
+    changeAdditionalPhone,
+  } = useUserForm(initialData, "profile");
+  return (
+    <Box
+      display="flex"
+      justifyContent="center"
+      py={4}
+      sx={{ bgcolor: "#f5f7fa" }}
+    >
+      <Paper sx={{ p: 5, maxWidth: 600, width: "100%", borderRadius: 3 }}>
+        <Typography variant="h4" textAlign="center" mb={3}>
+          פרטי פרופיל
+        </Typography>
 
-    return (
-        <Box display="flex" justifyContent="center" py={4} sx={{ bgcolor: "#f5f7fa" }}>
-            <Paper sx={{ p: 5, maxWidth: 600, width: "100%", borderRadius: 3 }}>
-                <Typography variant="h4" textAlign="center" mb={3}>
-                    פרטי פרופיל
-                </Typography>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!validate()) return;
+            onSave(data);
+          }}
+        >
+          <FormFields
+            data={data}
+            errors={errors}
+            onChange={onChange}
+            readOnly={readOnly}
+            showBankFields={true}
+            onAddAdditionalPhone={addAdditionalPhone}
+            onRemoveAdditionalPhone={removeAdditionalPhone}
+            onAdditionalPhoneChange={changeAdditionalPhone}
+          />
 
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        if (!validate()) return;
-                        onSave(data);
-                    }}
-                >
-                    <FormFields
-                        data={data}
-                        errors={errors}
-                        onChange={onChange}
-                        readOnly={readOnly}
-                        showBankFields={true}
-                    />
+          <Divider sx={{ my: 4 }} />
 
-                    <Divider sx={{ my: 4 }} />
+          {readOnly ? (
+            <Button variant="contained" fullWidth onClick={onEdit}>
+              ערוך פרטים
+            </Button>
+          ) : (
+            <Stack direction="row" justifyContent="space-between">
+              <Button type="submit" variant="contained" disabled={loading}>
+                שמור
+              </Button>
 
-                    {readOnly ? (
-                        <Button variant="contained" fullWidth onClick={onEdit}>
-                            ערוך פרטים
-                        </Button>
-                    ) : (
-                        <Stack direction="row" justifyContent="space-between">
-                            <Button type="submit" variant="contained" disabled={loading}>
-                                שמור
-                            </Button>
-
-                            <Button variant="text" color="secondary" onClick={onCancel}>
-                                ביטול
-                            </Button>
-                        </Stack>
-                    )}
-                </form>
-            </Paper>
-        </Box>
-    );
+              <Button variant="text" color="secondary" onClick={onCancel}>
+                ביטול
+              </Button>
+            </Stack>
+          )}
+        </form>
+      </Paper>
+    </Box>
+  );
 }
