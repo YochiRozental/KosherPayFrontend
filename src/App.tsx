@@ -24,6 +24,8 @@ import RegisterPage from "@/pages/users/RegisterPage";
 import AdminUsersPage from "@/components/admin/AdminUsersPage";
 import MainLayout from "@/components/layout/MainLayout";
 
+import ForgotSecretPage from "./pages/auth/ForgotSecretPage";
+
 import { setOnUnauthorized } from "@/api/authEvents";
 import { useAppSelector, useAppDispatch } from "@/app/hooks";
 import { logout } from "@/features/auth/authSlice";
@@ -74,7 +76,7 @@ export default function App() {
                 )
               }
             />
-
+            <Route path="/forgot-secret" element={<ForgotSecretPage />} />
             <Route
               path="/*"
               element={

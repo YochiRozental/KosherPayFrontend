@@ -20,6 +20,9 @@ interface Props {
   errors: Record<string, string> | null;
   onChange: (e: any) => void;
 
+  showForgotSecret?: boolean;
+  onForgotSecretClick?: () => void;
+
   onAddAdditionalPhone?: () => void;
   onRemoveAdditionalPhone?: (index: number) => void;
   onAdditionalPhoneChange?: (index: number, value: string) => void;
@@ -36,9 +39,11 @@ export default function FormFields({
   onAddAdditionalPhone,
   onRemoveAdditionalPhone,
   onAdditionalPhoneChange,
+  onForgotSecretClick,
 
   readOnly = false,
   showBankFields = false,
+  showForgotSecret = false,
 }: Props) {
   const bank = data?.bankAccount ?? {
     bankNumber: "",
@@ -90,15 +95,29 @@ export default function FormFields({
       <TextField
         {...baseProps("phone", "טלפון", <PhoneIcon />, {}, "tel-national")}
       />
-      <TextField
-        {...baseProps(
-          "secret",
-          "קוד סודי",
-          <LockIcon />,
-          { type: "password" },
-          "new-password",
+      <Stack spacing={0.5}>
+        <TextField
+          {...baseProps(
+            "secret",
+            "קוד סודי",
+            <LockIcon />,
+            { type: "password" },
+            "current-password",
+          )}
+        />
+
+        {showForgotSecret && !readOnly && (
+          <Button
+            type="button"
+            variant="text"
+            size="small"
+            onClick={onForgotSecretClick}
+            sx={{ alignSelf: "flex-start" }}
+          >
+            שכחתי קוד
+          </Button>
         )}
-      />
+      </Stack>
       {shouldShowAdditionalPhones && (
         <>
           <Typography variant="h6" mt={3}>

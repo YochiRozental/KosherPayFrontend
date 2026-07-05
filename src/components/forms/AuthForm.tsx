@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { Box, Paper, Typography, Button, Stack, Divider } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import * as banksApi from "../../api/banksApi";
 import { useUserForm } from "../../hooks/useUserForm";
@@ -22,6 +23,7 @@ export default function AuthForm({
   onSwitch,
 }: Props) {
   const isReg = mode === "register";
+  const navigate = useNavigate();
   const [localError, setLocalError] = useState<string | null>(null);
 
   const {
@@ -86,6 +88,8 @@ export default function AuthForm({
               errors={errors}
               onChange={onChange}
               showBankFields={isReg}
+              showForgotSecret={!isReg}
+              onForgotSecretClick={() => navigate("/forgot-secret")}
               onAddAdditionalPhone={addAdditionalPhone}
               onRemoveAdditionalPhone={removeAdditionalPhone}
               onAdditionalPhoneChange={changeAdditionalPhone}
